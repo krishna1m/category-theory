@@ -1,8 +1,6 @@
 package abstractmath
 
 import scala.util.{Try, Success, Failure}
-import scala.concurrent.ExecutionContext.Implicits.global
-
 
 trait Monad[M[_]] extends Functor[M]:
   def pure[A](a: A): M[A]
