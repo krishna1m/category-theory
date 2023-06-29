@@ -63,11 +63,7 @@ object MonadInstances:
     def flatMap[A, B](ma: List[A])(f: A => List[B]): List[B] = ma match
       case a :: as => f(a) ::: flatMap(as)(f)
       case Nil => Nil
-    @scala.annotation.tailrec
-    def tailRecM[A, B](a: A)(f: A => List[Either[A, B]]): List[B] = f(a) match
-      case List(Right(b)) => List(b)
-      case List(Left(newA)) => tailRecM(newA)(f)
-      case Nil => tailRecM(a)(f)
+    def tailRecM[A, B](a: A)(f: A => List[Either[A, B]]): List[B] = ???
 end MonadInstances
 
 object MonadPlayground:
@@ -153,6 +149,7 @@ object CustomMonadPlayground extends App:
     def flatMap[A, B](ma: Tree[A])(f: A => Tree[B]): Tree[B] = ma match
       case Leaf(a) => f(a)
       case Branch(left, right) => Branch(flatMap(left)(f), flatMap(right)(f))
+    // stack-unsafe
     def tailRecM[A, B](a: A)(f: A => Tree[Either[A, B]]): Tree[B] = 
       def stackRec(t: Tree[Either[A, B]]): Tree[B] = t match
         case Leaf(Right(b)) => Leaf(b)
