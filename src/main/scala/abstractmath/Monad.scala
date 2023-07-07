@@ -20,7 +20,6 @@ extension [A](a: A)
 
 extension [M[_]: Monad, A](ma: M[A])
   def flatMapE[B](f: A => M[B]): M[B] = Monad[M].flatMap(ma)(f)
-  def mapE[B](f: A => B): M[B] = Monad[M].map(ma)(f)
 
 type ErrorOr[A] = Either[String, A]
 
