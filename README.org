@@ -1,2 +1,2 @@
-** Category Theory in Scala 😎
+** Category Theory in Scala ∞
 
