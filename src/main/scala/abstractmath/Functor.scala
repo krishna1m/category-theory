@@ -12,6 +12,8 @@ object Functor:
 extension [F[_]: Functor, A](fa: F[A])
   def mapE[B](f: A => B): F[B] = Functor[F].map(fa)(f)
 
+type StringEither[A] = Either[String, A]
+
 object FunctorInstances:
   given Functor[List] with
     def map[A, B](fa: List[A])(f: A => B): List[B] =
@@ -22,6 +24,12 @@ object FunctorInstances:
   given Functor[Try] with
     def map[A, B](fa: Try[A])(f: A => B): Try[B] =
       fa.map(f)
+  given Functor[StringEither] with
+    def map[A, B](fa: StringEither[A])(f: A => B): StringEither[B] = fa match
+      case Left(err) => Left(err)
+      case Right(value) => Right(f(value))
+      
+
 
 sealed trait Tree[+T]
 case class Leaf[+T](value: T) extends Tree[T]
@@ -55,6 +63,13 @@ object FunctorPlayground extends App:
   val myTree = Tree.branch(Tree.branch(Tree.leaf(4), 2, Tree.leaf(5)), 1, Tree.branch(Tree.leaf(6), 3, Tree.leaf(7)))
   val doubledTree = myTree.mapE(_ * 2)
   println(doubledTree)
+
+  val anEither: StringEither[Int] = Right(2)
+  println(anEither.map(_ + 1))
+
+  val anErrorEither: StringEither[Int] = Left("Something bad happened but I don't know what!")
+  println(anErrorEither.map(_ + 1))
+
 
 
   
