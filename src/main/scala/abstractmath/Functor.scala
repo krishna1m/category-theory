@@ -7,7 +7,7 @@ trait Functor[F[_]]:
   def map[A, B](fa: F[A])(f: A => B): F[B]
 
 object Functor:
-  def apply[F[_]: Functor] = summon[Functor[F]]
+  def apply[F[_]: Functor]: Functor[F] = summon[Functor[F]]
 
 extension [F[_]: Functor, A](fa: F[A])
   def mapE[B](f: A => B): F[B] = Functor[F].map(fa)(f)
