@@ -2,10 +2,11 @@ package abstractmath
 
 import scala.util.{Try, Success, Failure}
 
-trait Monad[M[_]] extends Functor[M]:
-  def pure[A](a: A): M[A] // `pure` comes from Applicative - to wrap a normal value into a monadic value
-  def flatMap[A, B](ma: M[A])(f: A => M[B]): M[B] // `flatMap` comes from FlatMap - to transform monadic values in sequence
-  def map[A, B](ma: M[A])(f: A => B): M[B] = // `map` comes from Functor
+trait Monad[M[_]] extends Applicative[M] with FlatMap[M]:
+  // `pure` comes from Applicative - to wrap a normal value into a monadic value
+  // `flatMap` comes from FlatMap - to transform monadic values in sequence
+  // `map` comes from Functr
+  def map[A, B](ma: M[A])(f: A => B): M[B] = 
     flatMap(ma)(a => pure(f(a)))
   def tailRecM[A, B](a: A)(f: A => M[Either[A, B]]): M[B] // needs to implemented for every custom Monad
 end Monad
@@ -14,12 +15,6 @@ object Monad:
   def apply[M[_]: Monad] = summon[Monad[M]]
   def getPairs[M[_]: Monad, A, B](ma: M[A], mb: M[B]): M[(A, B)] =
     Monad[M].flatMap(ma)((a: A) => Monad[M].map(mb)((b: B) => (a, b)))
-
-extension [A](a: A)
-  def pure[M[_]: Monad]: M[A] = Monad[M].pure(a)
-
-extension [M[_]: Monad, A](ma: M[A])
-  def flatMapE[B](f: A => M[B]): M[B] = Monad[M].flatMap(ma)(f)
 
 type ErrorOr[A] = Either[String, A]
 
