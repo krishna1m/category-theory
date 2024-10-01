@@ -5,7 +5,7 @@ import scala.util.{Try, Success, Failure}
 trait Monad[M[_]] extends Applicative[M] with FlatMap[M]:
   // `pure` comes from Applicative - to wrap a normal value into a monadic value
   // `flatMap` comes from FlatMap - to transform monadic values in sequence
-  // `map` comes from Functr
+  // `map` comes from Functor
   def map[A, B](ma: M[A])(f: A => B): M[B] = 
     flatMap(ma)(a => pure(f(a)))
   def tailRecM[A, B](a: A)(f: A => M[Either[A, B]]): M[B] // needs to implemented for every custom Monad
